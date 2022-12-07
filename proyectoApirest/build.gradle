@@ -1,0 +1,67 @@
+group 'BaseWebScreenPlay'
+version '1.0'
+apply plugin: 'groovy'
+apply plugin: 'java'
+apply plugin: 'java-library'
+apply plugin: 'maven-publish'
+apply plugin: "net.serenity-bdd.serenity-gradle-plugin"
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+def versionSerenity='3.4.3'
+def versionCucumber='7.6.0'
+
+repositories {
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "net.serenity-bdd:serenity-gradle-plugin:3.4.2"
+    }
+}
+
+dependencies {
+
+    //DEPENDENCIAS DE SERENITY - TECNOLOGIAS WEB
+    implementation 'net.serenity-bdd:serenity-cucumber:3.4.3'
+    implementation group: 'io.cucumber', name: 'datatable', version: "${versionCucumber}"
+    testImplementation group: 'io.cucumber', name: 'cucumber-junit', version: "${versionCucumber}"
+    implementation group: 'net.serenity-bdd', name: 'serenity-screenplay', version: "${versionSerenity}"
+    implementation group: 'net.serenity-bdd', name: 'serenity-screenplay-webdriver', version: "${versionSerenity}"
+    implementation group: 'net.serenity-bdd', name: 'serenity-junit', version: "${versionSerenity}"
+    implementation group: 'net.serenity-bdd', name: 'serenity-core', version: "${versionSerenity}"
+    implementation group: 'net.serenity-bdd', name: 'serenity-report-resources', version: "${versionSerenity}"
+    implementation group: 'org.mockito', name: 'mockito-core', version: '3.12.4'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.8.2'
+
+
+    // serenity Rest implementation
+    implementation 'net.serenity-bdd:serenity-screenplay-rest:3.4.3'
+
+    // aws Implementation
+    implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.228')
+    implementation 'com.amazonaws:aws-java-sdk-lambda:1.11.228'
+    implementation 'com.amazonaws:aws-java-sdk-s3'
+    implementation 'com.amazonaws:aws-java-sdk-logs:1.12.54'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.7'
+    implementation 'org.json:json:20201115'
+
+
+
+}
+test {
+    useJUnit {
+        //include "**/*";
+        gradle.startParameter.continueOnFailure = true
+        testLogging.showStandardStreams = true
+        systemProperties System.getProperties()
+        systemProperty "cucumber.filter.tags", System.getProperty("cucumber.filter.tags")
+    }
+}
